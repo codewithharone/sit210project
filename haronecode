@@ -1,0 +1,89 @@
+// This #include statement was automatically added by the Particle IDE.
+#include <Adafruit_DHT.h>
+
+// This #include statement was automatically added by the Particle IDE.
+#include <blynk.h>
+
+// This #include statement was automatically added by the Particle IDE.
+#include "Adafruit_DHT/Adafruit_DHT.h"
+
+
+char auth[] = "bQkA1L3M6nkwQMsUbfwjnQLR_T3nPM2G"; 
+
+int led = D7;  // The on-board LED
+
+// DHT parameters
+    #define DHTPIN 5 
+    #define DHTTYPE DHT22
+    // Variables
+    float temperature;
+    int humidity;
+    int light;
+    // Pins
+    int light_sensor_pin = A0;
+    // DHT sensor
+    DHT dht(DHTPIN, DHTTYPE);
+    unsigned long lastmillis = 0;
+    
+    void setup() {
+        Serial.begin(115200);
+        delay(5000); 
+        // Start Blynk
+        Blynk.begin(auth);
+        // Start DHT sensor
+        dht.begin();
+        // Start LED
+        pinMode(led, OUTPUT);
+        // Start Webhooks
+        Particle.subscribe("hook-response/temp", myHandler, MY_DEVICES);
+        Particle.subscribe("hook-response/humidity", myHandler, MY_DEVICES);
+        Particle.subscribe("hook-response/light", myHandler, MY_DEVICES);
+    }
+    
+    void myHandler(const char *event, const char *data) {
+      // Handle the integration response
+    }
+    
+    void readData()
+        {
+        // Turn ON the LED
+        digitalWrite(led, HIGH);   
+        // Temp measurement
+        temperature = dht.getTempCelcius();
+        // Humidity measurement
+        humidity = dht.getHumidity();
+        // Light level measurement
+        float light_measurement = analogRead(light_sensor_pin);
+        light = (int)(light_measurement/4096*100);
+        
+        // Publish data to Webhook -> thingspeak.com
+        Particle.publish("temp", String(temperature), PRIVATE);
+        Particle.publish("humidity", String(humidity), PRIVATE);
+        Particle.publish("light", String(light), PRIVATE);
+        
+        // Publish data to Blynk
+        // virtual pin 1 will be the temperature
+        Blynk.virtualWrite(V1, String(temperature));  
+        
+        // virtual pin 3 will be the humidity
+        Blynk.virtualWrite(V3, String(humidity));  
+        
+         
+        // virtual pin 6 will be the light
+        Blynk.virtualWrite(V6, String(light)); // photon1 history graph
+        
+    
+        // Turn OFF the LED
+        digitalWrite(led, LOW);    
+      
+        }
+    
+    void loop() {
+        
+        Blynk.run(); 
+        
+            if ((millis() - lastmillis) > 20000) {
+                lastmillis = millis();
+                readData();
+            }
+    }
