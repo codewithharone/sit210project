@@ -1,0 +1,14 @@
+USER MANUAL
+
+STEP 1: Buy Parts listed in previous slides of materials required.
+STEP 2: Look at schematic diagram and make connections on the breadboard
+STEP 3: Copy the code from my github page and paste into Particle IDE. Save code verify and flash onto device.
+STEP 4: Download blynk app on ios or android and follow instructions from blynk website on how to set it up. Get your auth token from blynk and paste it into my github code replace your auth token with mine so that the output can be displayed on your cellphone blynk application.
+STEP 5: Place your temperature and light reading and humidity sensor device in any room of your choice and monitor temperature light and humidity through Blynk app on your cell phone and adjust the heater temperature as per your wish.
+STEP 6: See which rooms are colder and decide whether you need a heater or not and assess why its colder, is it because there are lots of windows so air can come inside or is it because you live in a basement.
+
+
+Also please note: 
+When using particle IDE you will need to install Blynk library and ADAfruit library by clicking on the library on the left of
+screen on build particle and search for ADAfruit library and install that to your particular app that you are working on
+and do the same for the Blynk library.
